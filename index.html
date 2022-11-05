@@ -26,24 +26,44 @@
   </head>
   <body>
     <div class="container">
-      <div class="weather-app-border">
-        <h1>Boston, MA, USA</h1>
-        <ul>
-          <li>Friday 09:23</li>
-          <li>Clear</li>
-        </ul>
-        <!-- one row with two columns with six columns out of 12 each-->
-        <div class="row">
-          <div class="col-md-6">☀ 32 °C | °F</div>
-          <div class="col-md-6">
+      <div class="weather-app-wrapper">
+        <div class="weather-app-border">
+          <div class="overview">
+            <h1>Boston, MA, USA</h1>
             <ul>
-              <li>Precipitation: 0%</li>
-              <li>Humidity: 72%</li>
-              <li>Wind: 2mph</li>
+              <li>Friday 09:23</li>
+              <li>Clear</li>
             </ul>
-            <button>Temperature</button>
-            <button>Precipitation</button>
-            <button>Wind</button>
+          </div>
+          <!-- one row with two columns with six columns out of 12 each-->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="d-flex weather-temperature">
+                <img
+                  src="https://th.bing.com/th/id/R.5dd040d4b4c281524558c8759347cd55?rik=Wpfq5Uly9nhUhw&pid=ImgRaw&r=0"
+                  alt="Partly Cloudy"
+                  class="float-left"
+                />
+                <div class="float-left">
+                  <strong>32</strong
+                  ><span class="units"
+                    >°C | <a href="#" id="farenheit">°F</a>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <ul>
+                <li>Precipitation: 0%</li>
+                <li>Humidity: 72%</li>
+                <li>Wind: 2mph</li>
+              </ul>
+              <div class="d-flex">
+                <button>Temperature</button>
+                <button>Precipitation</button>
+                <button>Wind</button>
+              </div>
+            </div>
           </div>
         </div>
         <small>
