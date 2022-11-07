@@ -21,6 +21,7 @@ li {
 
 .overview {
   margin-bottom: 30px;
+  text-transform: capitalize;
 }
 
 .weather-app-wrapper {
@@ -34,7 +35,7 @@ li {
   padding: 20px;
 }
 
-.weather-temperature #farenheit {
+.weather-temperature #celcius {
   text-decoration-line: none;
 }
 
