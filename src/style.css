@@ -19,9 +19,13 @@ li {
   padding: 0;
 }
 
+li::first-letter {
+  text-transform: capitalize;
+}
+
 .overview {
   margin-bottom: 30px;
-  text-transform: capitalize;
+  /* text-transform: capitalize; */
 }
 
 .weather-app-wrapper {
