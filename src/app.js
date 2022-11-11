@@ -8,6 +8,15 @@ function displayDescription(response) {
   description.innerHTML = response.data.weather[0].main;
 }
 
+function displayIcon(response) {
+  let iconElement = document.querySelector("#icon");
+  iconElement.setAttribute(
+    "src",
+    `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`
+  );
+  iconElement.setAttribute("alt", response.data.weather[0].description);
+}
+
 function formatDateTime(timestamp) {
   let date = new Date(timestamp);
   let hour = date.getHours();
@@ -62,6 +71,7 @@ function displayTemperature(response) {
 
   displayCity(response);
   displayDescription(response);
+  displayIcon(response);
   displayDateTime(response);
   displayFeelsLike(response);
   displayHumidity(response);
