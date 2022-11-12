@@ -1,4 +1,3 @@
-</html>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,6 +16,26 @@
     <div class="container">
       <div class="weather-app-wrapper">
         <div class="weather-app-border">
+          <form id="search-form" class="mb-3">
+            <div class="row">
+              <div class="col-9">
+                <input
+                  type="search"
+                  class="form-control"
+                  placeholder="Search weather by city"
+                  id="city-input"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="col-3">
+                <input
+                  type="submit"
+                  class="btn btn-success w-100"
+                  value="Search"
+                />
+              </div>
+            </div>
+          </form>
           <div class="overview">
             <h1 id="city"></h1>
             <ul>
@@ -28,12 +47,7 @@
           <div class="row">
             <div class="col-md-6">
               <div class="d-flex weather-temperature">
-                <img
-                  src=""
-                  alt="Weather Icon"
-                  id="icon"
-                  class="float-left"
-                />
+                <img src="" alt="Weather Icon" id="icon" class="float-left" />
                 <div class="float-left">
                   <strong id="temperature"></strong
                   ><span class="units"

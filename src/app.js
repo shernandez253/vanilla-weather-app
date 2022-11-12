@@ -78,8 +78,19 @@ function displayTemperature(response) {
   displayWind(response);
 }
 
-let cityName = "boston";
-let apiKey = "9c0a0dd5ce072e1ac8919092ab708dad";
-let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=imperial`;
+function search(city) {
+  let apiKey = "9c0a0dd5ce072e1ac8919092ab708dad";
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
+  axios.get(apiUrl).then(displayTemperature);
+}
 
-axios.get(apiUrl).then(displayTemperature);
+function handleSubmit(event) {
+  event.preventDefault();
+  let cityInputElement = document.querySelector("#city-input");
+  search(cityInputElement.value);
+}
+
+search("Boston");
+
+let form = document.querySelector("#search-form");
+form.addEventListener("submit", handleSubmit);
