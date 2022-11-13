@@ -67,8 +67,6 @@ function displayTemperature(response) {
   let temperature = document.querySelector("#temperature");
   temperature.innerHTML = Math.round(response.data.main.temp);
 
-  console.log(response.data);
-
   displayCity(response);
   displayDescription(response);
   displayIcon(response);
@@ -89,6 +87,21 @@ function handleSubmit(event) {
   let cityInputElement = document.querySelector("#city-input");
   search(cityInputElement.value);
 }
+
+function getLocalLocation(response) {
+  let localCity = response.data[0].name;
+  search(localCity);
+}
+
+function handleCurrentLocation(position) {
+  let apiKey = "9c0a0dd5ce072e1ac8919092ab708dad";
+  let longitude = position.coords.longitude;
+  let latitude = position.coords.latitude;
+  let apiUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=imperial`;
+  axios.get(apiUrl).then(getLocalLocation);
+}
+
+navigator.geolocation.getCurrentPosition(handleCurrentLocation);
 
 search("Boston");
 
