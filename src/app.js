@@ -36,7 +36,7 @@ function formatDateTime(timestamp) {
     minutes = `0${minutes}`;
   }
 
-  if (hour > 12) {
+  if (hour < 12) {
     hour = `0${hour}`;
   }
 
@@ -50,12 +50,12 @@ function displayDateTime(response) {
 
 function displayFeelsLike(response) {
   let precipiation = document.querySelector("#feels-like");
-  precipiation.innerHTML = response.data.main.humidity;
+  precipiation.innerHTML = response.data.main.feels_like;
 }
 
 function displayHumidity(response) {
   let humidity = document.querySelector("#humidity");
-  humidity.innerHTML = response.data.main.feels_like;
+  humidity.innerHTML = response.data.main.humidity;
 }
 
 function displayWind(response) {
@@ -65,7 +65,8 @@ function displayWind(response) {
 
 function displayTemperature(response) {
   let temperature = document.querySelector("#temperature");
-  temperature.innerHTML = Math.round(response.data.main.temp);
+  farenheitTemperature = response.data.main.temp;
+  temperature.innerHTML = Math.round(farenheitTemperature);
 
   displayCity(response);
   displayDescription(response);
@@ -101,9 +102,37 @@ function handleCurrentLocation(position) {
   axios.get(apiUrl).then(getLocalLocation);
 }
 
-navigator.geolocation.getCurrentPosition(handleCurrentLocation);
+function convertToCelcuis(event) {
+  event.preventDefault();
+  let temperatureElement = document.querySelector("#temperature");
+  //add active class from celcius-link
+  farenheitLink.classList.remove("active");
+  celciusLink.classList.add("active");
+  temperatureElement.innerHTML = Math.round(
+    (farenheitTemperature - 32) * (5 / 9)
+  );
+}
 
-search("Boston");
+function convertToFarenheit(event) {
+  event.preventDefault();
+  let temperatureElement = document.querySelector("#temperature");
+  //add active class from farenheit-link
+  celciusLink.classList.remove("active");
+  farenheitLink.classList.add("active");
+  temperatureElement.innerHTML = Math.round(farenheitTemperature);
+}
+
+let farenheitTemperature = null;
 
 let form = document.querySelector("#search-form");
 form.addEventListener("submit", handleSubmit);
+
+let celciusLink = document.querySelector("#celcius-link");
+celciusLink.addEventListener("click", convertToCelcuis);
+
+let farenheitLink = document.querySelector("#farenheit-link");
+farenheitLink.addEventListener("click", convertToFarenheit);
+
+navigator.geolocation.getCurrentPosition(handleCurrentLocation);
+
+search("Boston");

@@ -39,7 +39,8 @@ li::first-letter {
   padding: 20px;
 }
 
-.weather-temperature #celcius {
+.weather-temperature #celcius-link,
+.weather-temperature #farenheit-link {
   text-decoration-line: none;
 }
 
@@ -60,3 +61,12 @@ li::first-letter {
   position: relative;
   top: -33px;
 }
+
+.weather-temperature .active {
+  color: rgb(33, 33, 33);
+  cursor: default;
+}
+
+/* .weather-temperature .active:hover {
+  text-decoration: none;
+} */
