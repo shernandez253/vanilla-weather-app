@@ -70,3 +70,21 @@ li::first-letter {
 /* .weather-temperature .active:hover {
   text-decoration: none;
 } */
+
+.weather-description-boxes {
+  opacity: 0.7;
+}
+.weather-forcast {
+  margin-top: 35px;
+  text-align: center;
+  opacity: 0.82;
+}
+
+.weather-forecast-date {
+  font-size: 16px;
+  color: #000;
+}
+
+.weather-forcast .max-temp {
+  font-weight: bold;
+}
