@@ -75,6 +75,7 @@ function displayTemperature(response) {
   displayFeelsLike(response);
   displayHumidity(response);
   displayWind(response);
+  //displayForecast();
 }
 
 function search(city) {
@@ -105,7 +106,6 @@ function handleCurrentLocation(position) {
 function convertToCelcuis(event) {
   event.preventDefault();
   let temperatureElement = document.querySelector("#temperature");
-  //add active class from celcius-link
   farenheitLink.classList.remove("active");
   celciusLink.classList.add("active");
   temperatureElement.innerHTML = Math.round(
@@ -116,10 +116,39 @@ function convertToCelcuis(event) {
 function convertToFarenheit(event) {
   event.preventDefault();
   let temperatureElement = document.querySelector("#temperature");
-  //add active class from farenheit-link
   celciusLink.classList.remove("active");
   farenheitLink.classList.add("active");
   temperatureElement.innerHTML = Math.round(farenheitTemperature);
+}
+
+function displayForecast() {
+  let forecastElement = document.querySelector("#forecast");
+  let forecastHtml = `<div class="row">`;
+  let days = ["Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon"];
+
+  //inject html into js with forEach to repeat code
+  days.forEach(function (day) {
+    forecastHtml =
+      forecastHtml +
+      `
+      <div class="col-2">
+        <div class="weather-forecast-day">${day}</div>
+        <img
+          src="http://openweathermap.org/img/wn/04d@2x.png"
+          alt=""
+          width="50"
+        />
+        <div class="weather-forecast-temperature">
+          <span class="max-temp"> 28°</span>
+          <span class="min-temp"> 8°</span>
+        </div>
+      </div>
+  `;
+  });
+
+  forecastHtml = forecastHtml + `</div>`;
+  forecastElement.innerHTML = forecastHtml;
+  console.log(forecastHtml);
 }
 
 let farenheitTemperature = null;
@@ -136,3 +165,4 @@ farenheitLink.addEventListener("click", convertToFarenheit);
 navigator.geolocation.getCurrentPosition(handleCurrentLocation);
 
 search("Boston");
+displayForecast();
