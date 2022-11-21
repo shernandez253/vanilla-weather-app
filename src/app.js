@@ -17,10 +17,23 @@ function displayIcon(response) {
   iconElement.setAttribute("alt", response.data.weather[0].description);
 }
 
-function formatDateTime(timestamp) {
-  let date = new Date(timestamp);
-  let hour = date.getHours();
-  let minutes = date.getMinutes();
+function formatTime(timestamp) {
+  let time = new Date(timestamp * 1000);
+  let hour = time.getHours();
+  let minutes = time.getMinutes();
+
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+
+  if (hour < 12) {
+    hour = `0${hour}`;
+  }
+  return ` ${hour}:${minutes}`;
+}
+
+function formatDay(timestamp) {
+  let date = new Date(timestamp * 1000);
   let day = date.getDay();
   let weekDays = [
     "Sunday",
@@ -32,20 +45,17 @@ function formatDateTime(timestamp) {
     "Saturday",
   ];
 
-  if (minutes < 10) {
-    minutes = `0${minutes}`;
-  }
-
-  if (hour < 12) {
-    hour = `0${hour}`;
-  }
-
-  return `${weekDays[day]} ${hour}:${minutes}`;
+  return `${weekDays[day]}`;
 }
 
-function displayDateTime(response) {
-  let dateTime = document.querySelector("#date-time");
-  dateTime.innerHTML = formatDateTime(response.data.dt * 1000);
+function displayTime(response) {
+  let timeDisplay = document.querySelector("#time");
+  timeDisplay.innerHTML = formatTime(response.data.dt);
+}
+
+function displayDate(response) {
+  let dateDisplay = document.querySelector("#date");
+  dateDisplay.innerHTML = formatDay(response.data.dt);
 }
 
 function displayFeelsLike(response) {
@@ -71,11 +81,14 @@ function displayTemperature(response) {
   displayCity(response);
   displayDescription(response);
   displayIcon(response);
-  displayDateTime(response);
+  displayTime(response);
+  displayDate(response);
   displayFeelsLike(response);
   displayHumidity(response);
   displayWind(response);
   //displayForecast();
+  getForecast(response.data.coord);
+  console.log(response.data);
 }
 
 function search(city) {
@@ -121,34 +134,49 @@ function convertToFarenheit(event) {
   temperatureElement.innerHTML = Math.round(farenheitTemperature);
 }
 
-function displayForecast() {
+function getForecast(coordinates) {
+  let apiKey = "c1e688fc5830bt7b77cdeo0bcaa64da0";
+  let latitude = coordinates.lat;
+  let longitude = coordinates.lon;
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${longitude}&lat=${latitude}&units=imperial&key=${apiKey}`;
+  //response is a 7 day forecast object
+  axios.get(apiUrl).then(displayForecast);
+}
+
+function displayForecast(response) {
   let forecastElement = document.querySelector("#forecast");
-  let forecastHtml = `<div class="row">`;
-  let days = ["Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon"];
+  let dailyForecast = response.data.daily;
 
   //inject html into js with forEach to repeat code
-  days.forEach(function (day) {
-    forecastHtml =
-      forecastHtml +
-      `
-      <div class="col-2">
-        <div class="weather-forecast-day">${day}</div>
-        <img
-          src="http://openweathermap.org/img/wn/04d@2x.png"
-          alt=""
-          width="50"
-        />
-        <div class="weather-forecast-temperature">
-          <span class="max-temp"> 28°</span>
-          <span class="min-temp"> 8°</span>
+  let forecastHtml = `<div class="row">`;
+  dailyForecast.forEach(function (forecastDay, index) {
+    if (index <= 5) {
+      forecastHtml += `
+        <div class="col-2">
+          <div class="weather-forecast-day">${formatDay(forecastDay.time)}</div>
+          <img
+            src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${
+              forecastDay.condition.icon
+            }.png"
+            alt=""
+            width="50"
+          />
+          <div class="weather-forecast-temperature">
+            <span class="max-temp"> ${Math.round(
+              forecastDay.temperature.maximum
+            )}°</span>
+            <span class="min-temp"> ${Math.round(
+              forecastDay.temperature.minimum
+            )}°</span>
+          </div>
         </div>
-      </div>
-  `;
+      `;
+    }
   });
 
   forecastHtml = forecastHtml + `</div>`;
   forecastElement.innerHTML = forecastHtml;
-  console.log(forecastHtml);
+  console.log(response.data.daily);
 }
 
 let farenheitTemperature = null;
@@ -165,4 +193,3 @@ farenheitLink.addEventListener("click", convertToFarenheit);
 navigator.geolocation.getCurrentPosition(handleCurrentLocation);
 
 search("Boston");
-displayForecast();
