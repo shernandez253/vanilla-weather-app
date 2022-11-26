@@ -1,35 +1,43 @@
 function displayCity(response) {
   let citySearch = document.querySelector("#city");
-  citySearch.innerHTML = response.data.name;
+  citySearch.innerHTML = response.data.city;
 }
 
 function displayDescription(response) {
   let description = document.querySelector("#description");
-  description.innerHTML = response.data.weather[0].main;
+  description.innerHTML = response.data.condition.description;
 }
 
 function displayIcon(response) {
   let iconElement = document.querySelector("#icon");
   iconElement.setAttribute(
     "src",
-    `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`
+    `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${response.data.condition.icon}.png`
   );
-  iconElement.setAttribute("alt", response.data.weather[0].description);
+  iconElement.setAttribute("alt", response.data.condition.description);
 }
 
 function formatTime(timestamp) {
   let time = new Date(timestamp * 1000);
   let hour = time.getHours();
   let minutes = time.getMinutes();
+  let clockDisplay = "";
 
   if (minutes < 10) {
     minutes = `0${minutes}`;
   }
 
+  //format military time to a 12-hour clock with am/pm indicators
   if (hour < 12) {
-    hour = `0${hour}`;
+    clockDisplay = ` 0${hour}:${minutes}am`;
   }
-  return ` ${hour}:${minutes}`;
+  if (hour >= 13 && hour <= 21) {
+    clockDisplay = ` 0${hour - 12}:${minutes}pm`;
+  } else {
+    clockDisplay = ` ${hour - 12}:${minutes}pm`;
+  }
+
+  return clockDisplay;
 }
 
 function formatDay(timestamp) {
@@ -50,22 +58,22 @@ function formatDay(timestamp) {
 
 function displayTime(response) {
   let timeDisplay = document.querySelector("#time");
-  timeDisplay.innerHTML = formatTime(response.data.dt);
+  timeDisplay.innerHTML = formatTime(response.data.time);
 }
 
 function displayDate(response) {
   let dateDisplay = document.querySelector("#date");
-  dateDisplay.innerHTML = formatDay(response.data.dt);
+  dateDisplay.innerHTML = formatDay(response.data.time);
 }
 
 function displayFeelsLike(response) {
   let precipiation = document.querySelector("#feels-like");
-  precipiation.innerHTML = response.data.main.feels_like;
+  precipiation.innerHTML = Math.round(response.data.temperature.feels_like);
 }
 
 function displayHumidity(response) {
   let humidity = document.querySelector("#humidity");
-  humidity.innerHTML = response.data.main.humidity;
+  humidity.innerHTML = Math.round(response.data.temperature.humidity);
 }
 
 function displayWind(response) {
@@ -75,7 +83,7 @@ function displayWind(response) {
 
 function displayTemperature(response) {
   let temperature = document.querySelector("#temperature");
-  farenheitTemperature = response.data.main.temp;
+  farenheitTemperature = response.data.temperature.current;
   temperature.innerHTML = Math.round(farenheitTemperature);
 
   displayCity(response);
@@ -86,14 +94,12 @@ function displayTemperature(response) {
   displayFeelsLike(response);
   displayHumidity(response);
   displayWind(response);
-  //displayForecast();
-  getForecast(response.data.coord);
-  console.log(response.data);
+  getForecast(response.data.coordinates);
 }
 
 function search(city) {
-  let apiKey = "9c0a0dd5ce072e1ac8919092ab708dad";
-  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
+  let apiKey = "c1e688fc5830bt7b77cdeo0bcaa64da0";
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=imperial`;
   axios.get(apiUrl).then(displayTemperature);
 }
 
@@ -104,15 +110,16 @@ function handleSubmit(event) {
 }
 
 function getLocalLocation(response) {
-  let localCity = response.data[0].name;
+  let localCity = response.data.city;
   search(localCity);
 }
 
 function handleCurrentLocation(position) {
-  let apiKey = "9c0a0dd5ce072e1ac8919092ab708dad";
-  let longitude = position.coords.longitude;
-  let latitude = position.coords.latitude;
-  let apiUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=imperial`;
+  //changed api from openweather to shecodes
+  let apiKey = "c1e688fc5830bt7b77cdeo0bcaa64da0";
+  let lon = position.coords.longitude;
+  let lat = position.coords.latitude;
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?lat=${lat}&lon=${lon}&key=${apiKey}&units=imperial`;
   axios.get(apiUrl).then(getLocalLocation);
 }
 
@@ -135,15 +142,17 @@ function convertToFarenheit(event) {
 }
 
 function getForecast(coordinates) {
+  console.log(coordinates);
   let apiKey = "c1e688fc5830bt7b77cdeo0bcaa64da0";
-  let latitude = coordinates.lat;
-  let longitude = coordinates.lon;
+  let latitude = coordinates.latitude;
+  let longitude = coordinates.longitude;
   let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${longitude}&lat=${latitude}&units=imperial&key=${apiKey}`;
   //response is a 7 day forecast object
   axios.get(apiUrl).then(displayForecast);
 }
 
 function displayForecast(response) {
+  console.log(response.data);
   let forecastElement = document.querySelector("#forecast");
   let dailyForecast = response.data.daily;
 
@@ -176,7 +185,6 @@ function displayForecast(response) {
 
   forecastHtml = forecastHtml + `</div>`;
   forecastElement.innerHTML = forecastHtml;
-  console.log(response.data.daily);
 }
 
 let farenheitTemperature = null;
