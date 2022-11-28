@@ -22,19 +22,41 @@ function formatTime(timestamp) {
   let hour = time.getHours();
   let minutes = time.getMinutes();
   let clockDisplay = "";
+  let meridiem = "";
 
   if (minutes < 10) {
     minutes = `0${minutes}`;
   }
 
-  //format military time to a 12-hour clock with am/pm indicators
-  if (hour < 12) {
-    clockDisplay = ` 0${hour}:${minutes}am`;
+  //format military time to a 12-hour clock with am/pm markers
+  //applying am marker
+  if (hour <= 11) {
+    meridiem = "am";
+    //12am
+    if (hour == 0) {
+      clockDisplay = ` ${hour + 12}:${minutes}${meridiem}`;
+    } else if (hour >= 1 && hour <= 9) {
+      //1am to 9am
+      clockDisplay = ` ${hour}:${minutes}${meridiem}`;
+    } else {
+      //10am to 11am
+      clockDisplay = ` ${hour}:${minutes}${meridiem}`;
+    }
   }
-  if (hour >= 13 && hour <= 21) {
-    clockDisplay = ` 0${hour - 12}:${minutes}pm`;
-  } else {
-    clockDisplay = ` ${hour - 12}:${minutes}pm`;
+
+  //applying pm marker
+  if (hour >= 12) {
+    meridiem = "pm";
+    if ((hour == 22) | (hour == 23)) {
+      //10pm to 11pm
+      clockDisplay = ` ${hour - 12}:${minutes}${meridiem}`;
+    } else if (hour >= 13 && hour <= 21) {
+      //1pm to 9pm
+      clockDisplay = ` ${hour - 12}:${minutes}${meridiem}`;
+    } else {
+      //12pm
+      clockDisplay = ` ${hour}:${minutes}${meridiem}`;
+    }
   }
 
   return clockDisplay;
@@ -142,7 +164,6 @@ function convertToFarenheit(event) {
 }
 
 function getForecast(coordinates) {
-  console.log(coordinates);
   let apiKey = "c1e688fc5830bt7b77cdeo0bcaa64da0";
   let latitude = coordinates.latitude;
   let longitude = coordinates.longitude;
@@ -152,14 +173,14 @@ function getForecast(coordinates) {
 }
 
 function displayForecast(response) {
-  console.log(response.data);
   let forecastElement = document.querySelector("#forecast");
   let dailyForecast = response.data.daily;
+  let forecastHtml = `<div class="row">`;
 
   //inject html into js with forEach to repeat code
-  let forecastHtml = `<div class="row">`;
   dailyForecast.forEach(function (forecastDay, index) {
-    if (index <= 5) {
+    //provides a 6 day forecast starting tomorrow
+    if (index > 0 && index <= 6) {
       forecastHtml += `
         <div class="col-2">
           <div class="weather-forecast-day">${formatDay(forecastDay.time)}</div>
@@ -201,3 +222,9 @@ farenheitLink.addEventListener("click", convertToFarenheit);
 navigator.geolocation.getCurrentPosition(handleCurrentLocation);
 
 search("Boston");
+
+//todo add event listener to change forecast temp unit conversions for .max-temp & .min-temp
+// let maxTemperatureElement = document.querySelector(".max-temp");
+// maxTemperatureElement.innerHTML = Math.round(
+//   (farenheitForecastTemp - 32) * (5 / 9)
+// );
