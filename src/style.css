@@ -1,5 +1,18 @@
 body {
   font-family: arial;
+  background: radial-gradient(
+    circle at 1.3% 2.8%,
+    rgb(239, 249, 249) 0%,
+    rgb(182, 199, 226) 100.2%
+  );
+}
+
+.weather-app-border {
+  background: radial-gradient(
+    circle at 10% 20%,
+    rgb(137, 210, 253) 0%,
+    rgb(255, 241, 188) 90%
+  );
 }
 
 h1 {
